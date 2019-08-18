@@ -8,16 +8,26 @@ Original file is located at
 """
 
 import numpy as np
+import pandas as pd
 
 m=0
 c=0
 lr=0.0001
 epoch=10000
 
-mse_marks = np.array([15,22,16,18,30])
-ese_marks = np.array([55,68,62,65,72])
-
+dataset = pd.read_csv('aimarks2017.csv')
+mse_marks = dataset.iloc[:, :-1].values
+ese_marks = dataset.iloc[:, -1].values
 n=float(len(mse_marks))
+
+x = pd.Series(mse_marks)
+y = pd.Series(ese_marks)
+
+r = x.cov(y)/(x.std()*y.std())
+
+beta1 = (r*y.std())/x.std()
+beta0 = y.mean()-beta1*x.mean()
+print(beta1,beta0)
 
 for i in range(epoch):
   y_pred = mse_marks*m + c
